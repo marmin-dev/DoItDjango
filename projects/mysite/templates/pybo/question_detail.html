@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load pybo_filter %}
 {% block content %}
 <div class="container my-3">
     {% if messages %}
@@ -22,7 +23,7 @@
     <div class="card my-3">
         <div class="card-body">
             <div class="card-text" style="white-space:pre-line;">
-                {{ question.content }}
+                {{ question.content|mark }}
             </div>
             <div class="d-flex justify-content-end">
                 {% if question.modify_date %}
@@ -48,6 +49,7 @@
             {% if question.comment_set.count > 0 %}
             <div class="mt-3">
                 {% for comment in question.comment_set.all %}
+                <a name="comment_{{ comment.id }}"></a>
                 <div class="comment py-2 text-muted">
                     <span style="white-space:pre-line;">{{ comment.content }}</span>
                     <span>
@@ -81,6 +83,16 @@
         {{ question.answer_set.count }}개의 답변이 있습니다.
     </h5>
     {% for answer in question.answer_set.all %}
+    <a name="answer_answer{{ answer.id }}"></a>
+    <div class="row my-3">
+        <div class="col-1">
+            <div class="badge rounded-pill bg-dark text-center p-3 border font-weight-bolder mb-1">
+                {{ answer.voter.count }}
+            </div>
+            <a href="#" data-uri="{% url 'pybo:vote_answer' answer.id %}"
+               class="recommend btn btn-sm btn-secondary btn-block my-1">추천</a>
+        </div>
+        <div class="col-11">
     <div class="card my-3">
         <div class="card-body">
             {% if request.user == answer.author %}
@@ -91,7 +103,7 @@
                    data-uri="{% url 'pybo:answer_delete' answer.id %}">삭제</a>
             </div>
             {% endif %}
-            <div class="card-text" style="white-space:pre-line;">{{ answer.content }}</div>
+            <div class="card-text" style="white-space:pre-line;">{{ answer.content|mark }}</div>
             <div class="d-flex justify-content-end">
                 {% if question.modify_date %}
                 <div class="badge rounded-pill bg-dark p-2 text-left mx-3">
@@ -108,6 +120,7 @@
             {% if answer.comment_set.count > 0 %}
             <div class="mt-3">
                 {% for comment in answer.comment_set.all %}
+                <a name="comment_{{ comment.id }}"></a>
                 <div class="comment py-2 text-muted">
                     <span style="white-space:pre-line;">{{ comment.content }}</span>
                     <span>
@@ -135,6 +148,8 @@
 <!--        질문 댓글 end-->
         </div>
     </div>
+            </div>
+        </div>
     {% endfor %}
     <br>
     <form action="{% url 'pybo:answer_create' question.id %}"
