@@ -1,7 +1,24 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="container my-3">
+    {% if messages %}
+    <div class="alert alert-danger my-3" role="alert">
+        {% for message in messages %}
+            <strong>{{ message.tags }}</strong>
+            <ul><li>{{ message.message }}</li></ul>
+        {% endfor %}
+    </div>
+    {% endif %}
     <h2 class="border-bottom py-2">{{ question.subject }}</h2>
+     <div class="row my-3">
+    <div class="col-1"> <!-- 추천영역 -->
+        <div class="badge rounded-pill bg-dark p-3 border font-weight-bolder mb-1">
+            {{ question.voter.count }}
+        </div>
+        <a href="#" data-uri="{% url 'pybo:vote_question' question.id %}"
+           class="recommend btn btn-sm btn-secondary btn-block my-1">추천</a>
+    </div>
+        <div class="col-11">
     <div class="card my-3">
         <div class="card-body">
             <div class="card-text" style="white-space:pre-line;">
@@ -56,6 +73,8 @@
                class="small"><small>댓글 추가..</small></a>
         </div>
 <!--        질문 댓글 end-->
+        </div>
+        </div>
         </div>
     </div>
     <h5 class="border-bottom my-3 py-2">
@@ -148,6 +167,12 @@
                 location.href = $(this).data('uri');
                 }
               });
+        $(".recommend").on('click',function(){
+            if(confirm("정말로 추천하시겠습니까?")){
+                location.href = $(this).data('uri');
+        }
+        });
            });
+
 </script>
 {% endblock %}
