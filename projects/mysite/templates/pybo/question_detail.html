@@ -79,10 +79,16 @@
         </div>
         </div>
     </div>
-    <h5 class="border-bottom my-3 py-2">
+    <div class="justify-content-end">
+    <h5 class="border-bottom my-3 py-2 p-2">
         {{ question.answer_set.count }}개의 답변이 있습니다.
     </h5>
-    {% for answer in question.answer_set.all %}
+        <select class="form-control ans">
+            <option value="recent" id="recent">최신순</option>
+            <option value="recommend" id="recommend">추천순</option>
+        </select>
+        </div>
+    {% for answer in answer_list %}
     <a name="answer_answer{{ answer.id }}"></a>
     <div class="row my-3">
         <div class="col-1">
@@ -116,7 +122,7 @@
                     <div>{{answer.create_date}}</div>
                 </div>
             </div>
-            <!--            질문 댓글-->
+            <!--            답변 댓글-->
             {% if answer.comment_set.count > 0 %}
             <div class="mt-3">
                 {% for comment in answer.comment_set.all %}
@@ -145,7 +151,7 @@
             <a href="{% url 'pybo:comment_create_answer' answer.id %}"
                class="small"><small>댓글 추가..</small></a>
         </div>
-<!--        질문 댓글 end-->
+<!--        답변 댓글 end-->
         </div>
     </div>
             </div>
@@ -165,6 +171,51 @@
             {% endfor %}
         </div>
         {% endif %}
+        <!--페이징처리-->
+        <ul class="pagination justify-content=center">
+<!--            이전페이지-->
+            {% if question_list.has_previous %}
+            <li class="page-item">
+                <a class="page-item" data-page="{{ question_list.previous_page_number}}"
+                href="#">이전</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link" tabindex="-1" aria-disabled="true" href="#">이전</a>
+            </li>
+            {% endif %}
+            <!--페이지리스트-->
+            {% for page_number in answer_list.paginator.page_range %}
+            {% if page_number >= answer_list.number|add:-5 and page_number <= answer_list.number|add:5 %}
+        {% if page_number == answer.list.number %}
+        <li class="page-item active" qria-current="page">
+            <a class="page-link" href="{% url 'pybo:detail' question.id %}?page={{ page_number }}">
+                {{ page_number }}
+            </a>
+        </li>
+            {% else %}
+            <li class="page-item">
+                <a class="page-link" href="#" data-page="{{ page_number }}">
+                    {{ page_number }}
+                </a>
+            </li>
+            {% endif %}
+            {% endif %}
+            {% endfor %}
+            <!--다음 페이지-->
+            {% if answer_list.has_next %}
+            <li class="page-item">
+                <a class="page-link" data-page="{{ answer_list.next_page_number }}"
+                   href="#">다음</a>
+            </li>
+            {% else %}
+            <li class="page-item disabled">
+                <a class="page-link"
+                   tabindex="-1" aria-disabled="true" href="#">다음</a>
+            </li>
+            {% endif %}
+        </ul>
+        <!--페이징처리-->
         <div class="form-group">
             <textarea name="content" id="content"
                       {% if not user.is_authenticated %} disabled {% endif %}
@@ -172,7 +223,24 @@
         </div>
         <input type="submit" value="답변 등록" class="btn btn-primary">
     </form>
+    <form id="searchForm" method="get" action="{% url 'pybo:detail' question.id %}">
+        <input type="hidden" id="ans" name="ans" value="{{ ans }}">
+        <input type="hidden" id="page" name="page" value="{{ page }}">
+    </form>
 </div>
+<script>
+    const url = new URL(window.location.href);
+    const urlParams = url.searchParams;
+    const ansValue = urlParams.get('ans');
+
+    if (ansValue == "recommend") {
+      let recommend = document.getElementById("recommend");
+      recommend.setAttribute("selected", true);
+    }else {
+      let recent = document.getElementById("recent");
+      recent.setAttribute("selected", true);
+    }
+</script>
 {% endblock %}
 {% block script %}
 <script type="text/javascript">
@@ -187,7 +255,16 @@
                 location.href = $(this).data('uri');
         }
         });
-           });
+        $(".ans").on('change',function(){
+            $("#ans").val($(this).val());
+            $("#searchForm").submit();
+        });
+        $(".page-link").on('click',function(){
+            $("#page").val($(this).data("page"));
+            $("#searchForm").submit();
+        });
+
+     });
 
 </script>
 {% endblock %}
