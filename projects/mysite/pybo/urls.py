@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import question_views, base_views, answer_views, comment_views, vote_views
+from .views import question_views, base_views, answer_views, comment_views, vote_views, profile_views
 
 app_name = 'pybo'
 
@@ -40,6 +40,9 @@ urlpatterns = [
     path('vote/question/<int:question_id>/', vote_views.vote_question, name="vote_question"),
     path('vote/answer/<int:answer_id>/', vote_views.vote_answer, name="vote_answer"),
 
-
+    # profile
+    path('profile/question/<int:user_id>',profile_views.QuestionListView.as_view(),name='question_view'),
+    path('profile/answer/<int:user_id>',profile_views.AnswerListView.as_view(),name='answer_view'),
+    path('profile/comment/<int:user_id>', profile_views.CommentListView.as_view(), name='comment_view'),
 
 ]

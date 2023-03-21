@@ -1,0 +1,43 @@
+{% extends 'base_profile.html' %}
+{% block list %}
+    <div class="my-3">
+        <h2>내가 작성한 질문</h2>
+        <table class="table">
+            <tr class="table-dark">
+                <td>질문제목</td>
+                <td>카테고리</td>
+                <td>작성일자</td>
+            </tr>
+        {% if questions %}
+            {% for question in questions %}
+            <tr>
+                <td><a href="{% url 'pybo:detail' question.id %}">{{ question.subject }}</a></td>
+                <td>{{ question.category }}</td>
+                <td>{{ question.create_date }}</td>
+            </tr>
+
+            {% endfor %}
+            </table>
+<div class="pagination row">
+    <span class="step-links row justify-content-center">
+        {% if page_obj.has_previous %}
+            <a href="?page=1" class="page-link col-2">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}" class="page-link col-2">previous</a>
+        {% endif %}
+
+        <span class="current-page col-2 center-align">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}" class="page-link col-2">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link col-2">last &raquo;</a>
+        {% endif %}
+    </span>
+  </div>
+            {% else %}
+        <h2>이곳은 조용하네요...</h2>
+        {% endif %}
+    </div>
+
+{% endblock %}
