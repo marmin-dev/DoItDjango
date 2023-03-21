@@ -7,11 +7,14 @@
     </div>
     <div class="col-8 text-right">
       <span>
-        또는 <a href="{% url 'common:signup' %}">계정을 만드세요</a>
+        또는 <a href="{% url 'signup' %}">계정을 만드세요</a>
+      </span>
+      <span>
+        또는 <a href="{% url 'password_reset' %}">비밀번호를 잊었나요?</a>
       </span>
     </div>
   </div>
-  <form method="post" class="post-form" action="{% url 'common:login' %}">
+  <form method="post" class="post-form" action="{% url 'login' %}">
     {% csrf_token %}
     <input type="hidden" name="next" value="{{ next }}">
     {% include "form_errors.html" %}
