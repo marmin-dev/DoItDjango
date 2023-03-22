@@ -9,4 +9,5 @@ urlpatterns = [
     path('common/',include('common.urls')),
     path('',base_views.index, name='index'),
     path('reset/<uidb64>/<token>/', views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
+    path('accounts/',include('allauth.urls')),
 ]
