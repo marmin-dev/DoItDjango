@@ -43,3 +43,9 @@ class PasswordResetConfirmView(auth_views.PasswordResetConfirmView):
     """
     template_name = 'common/password_reset_confirm.html'
     success_url = reverse_lazy('login')
+
+def page_not_found(request, exception):
+    """
+    404 Page not found
+    """
+    return render(request,'common/404.html',{})

@@ -11,3 +11,5 @@ urlpatterns = [
     path('reset/<uidb64>/<token>/', views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),
     path('accounts/',include('allauth.urls')),
 ]
+
+handler404 = 'common.views.page_not_found'
